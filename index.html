@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Search Engine</title>
+  <script src="https://unpkg.com/lunr@2.3.9/lunr.js"></script> 
+</head>
+<body>
+
+  <h1>My Simple Search Engine</h1>
+
+  <input type="text" id="searchInput" placeholder="Search...">
+  <button onclick="search()">Search</button>
+
+  <ul id="searchResults"></ul>
+
+  <script>
+    // Sample data (replace with your actual data)
+    const documents = [
+      { id: 1, title: "Document 1", content: "This is the first document." },
+      { id: 2, title: "Document 2", content: "This is the second document." },
+      // ... more documents
+    ];
+
+    // Create an index
+    const idx = lunr(function () {
+      this.ref('id');
+      this.field('title');
+      this.field('content');
+
+      documents.forEach(function (doc) {
+        this.add(doc);
+      }, this);
+    });
+
+    function search() {
+      const query = document.getElementById('searchInput').value;
+      const results = idx.search(query);
+
+      const resultsList = document.getElementById('searchResults');
+      resultsList.innerHTML = '';
+
+      results.forEach(function (result) {
+        const doc = documents.find(doc => doc.id === result.ref);
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<b>${doc.title}</b><br>${doc.content}`;
+        resultsList.appendChild(listItem);
+      });
+    }
+  </script>
+
+</body>
+</html>
